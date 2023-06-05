@@ -12,6 +12,47 @@ use Illuminate\Http\Request;
 
 class RecipeController extends Controller
 {
+    public function index(Request $request)
+    {
+        $query = Recipe::query();
+
+        if ($request->has('title')) {
+            $query->where('title', 'like', '%' . $request->input('title') . '%');
+        }
+
+        if ($request->has('meal_type')) {
+            $query->where('meal_type', $request->input('meal_type'));
+        }
+
+        if ($request->has('n_servings')) {
+            $query->where('n_servings', $request->input('n_servings'));
+        }
+
+        if ($request->has('prep_time')) {
+            $query->where('prep_time', '<=', $request->input('prep_time'));
+        }
+
+        if ($request->has('cook_time')) {
+            $query->where('cook_time', '<=', $request->input('cook_time'));
+        }
+
+        if ($request->has('description')) {
+            $query->where('description', 'like', '%' . $request->input('description') . '%');
+        }
+
+        if ($request->has('difficulty')) {
+            $query->where('difficulty', $request->input('difficulty'));
+        }
+
+        if ($request->has('cuisine')) {
+            $query->where('cuisine', $request->input('cuisine'));
+        }
+
+        $recipes = $query->paginate(10);
+
+        return RecipeResource::collection($recipes);
+    }
+
     public function show(Recipe $recipe)
     {
         return new RecipeResource($recipe->load('user'));

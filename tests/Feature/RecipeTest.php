@@ -12,6 +12,27 @@ class RecipeTest extends TestCase
 {
     use RefreshDatabase;
 
+    public function test_guest_can_list_recipes()
+    {
+        $response = $this->get('/api/recipes');
+
+        $response->assertStatus(200);
+    }
+
+    public function test_guest_can_filter_recipes_by_cuisine()
+    {
+        Recipe::factory(2)->create();
+        Recipe::factory(7)->create(['cuisine' => 'Thai']);
+
+        $response = $this->get('/api/recipes?cuisine=Thai');
+
+        $response->assertStatus(200);
+
+        $responseData = $response->json();
+
+        $this->assertCount(7, $responseData['data']);
+    }
+
     public function test_guest_can_view_a_recipe()
     {
         $recipe = Recipe::factory()->create();
