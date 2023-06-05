@@ -8,3 +8,7 @@ Recipes API offers endpoints for managing recipes, including operations like cre
 
 By using Recipes API, front-end and mobile developers can focus on what they do best, while having a robust and versatile back-end ready to use.
 
+## Features
+- search recipes with filters
+- manage recipes (create, read, update, delete)
+- follow/unfollow users
