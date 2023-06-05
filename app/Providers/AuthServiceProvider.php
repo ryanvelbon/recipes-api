@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Models\Recipe;
+use App\Policies\RecipePolicy;
 // use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
@@ -13,7 +15,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array<class-string, class-string>
      */
     protected $policies = [
-        //
+        Recipe::class => RecipePolicy::class,
     ];
 
     /**
