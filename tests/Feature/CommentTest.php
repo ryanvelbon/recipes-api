@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Comment;
+use App\Models\Image;
 use App\Models\Recipe;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -12,6 +13,58 @@ use Tests\TestCase;
 class CommentTest extends TestCase
 {
     use RefreshDatabase;
+
+    public function test_user_can_comment_on_a_recipe()
+    {
+        $user = User::factory()->create();
+        $recipe = Recipe::factory()->create();
+
+        $response = $this->actingAs($user)->post('/api/recipes/' . $recipe->id . '/comments', [
+            'body' => 'This recipe looks delicious!'
+        ]);
+
+        $response->assertStatus(201);
+        $response->assertJsonFragment(['body' => 'This recipe looks delicious!']);
+    }
+
+    public function test_user_can_comment_on_an_image()
+    {
+        $user = User::factory()->create();
+        $image = Image::factory()->create(); // assuming you have an Image factory
+
+        $response = $this->actingAs($user)->post('/api/images/' . $image->id . '/comments', [
+            'body' => 'This is a great image!'
+        ]);
+
+        $response->assertStatus(201);
+        $response->assertJsonFragment(['body' => 'This is a great image!']);
+    }
+
+    public function test_user_can_reply_to_a_comment()
+    {
+        $this->seed();
+
+        $user = User::factory()->create();
+        $comment = Comment::factory()->create(); // assuming you have a Comment factory
+
+        $response = $this->actingAs($user)->post('/api/comments/' . $comment->id . '/comments', [
+            'body' => 'I totally agree!'
+        ]);
+
+        $response->assertStatus(201);
+        $response->assertJsonFragment(['body' => 'I totally agree!']);
+    }
+
+    public function test_guest_cannot_comment()
+    {
+        $recipe = Recipe::factory()->create();
+
+        $response = $this->post('/api/recipes/' . $recipe->id . '/comments', [
+            'body' => 'This recipe looks delicious!'
+        ]);
+
+        $response->assertStatus(401); // unauthorized
+    }
 
     public function test_user_can_edit_their_comment()
     {

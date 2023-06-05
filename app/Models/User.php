@@ -38,4 +38,8 @@ class User extends Authenticatable
         return $this->belongsToMany(User::class, 'followings', 'followee_id', 'follower_id');
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
 }

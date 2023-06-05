@@ -28,12 +28,11 @@ class Comment extends Model
 
     public function replies()
     {
-        return $this->hasMany(Comment::class, 'parent_id');
+        return $this->morphMany(Comment::class, 'commentable');
     }
 
-    // same as replies()
     public function comments()
     {
-        return $this->hasMany(Comment::class, 'parent_id');
+        return $this->morphMany(Comment::class, 'commentable');
     }
 }
